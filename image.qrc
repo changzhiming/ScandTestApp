@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/灯泡2.png</file>
+        <file>image/灯泡关.png</file>
+        <file>image/灯泡离线.png</file>
+    </qresource>
+</RCC>
