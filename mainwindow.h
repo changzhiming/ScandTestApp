@@ -1,14 +1,17 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "webview/Webmainwindow.h"
 #include <QMainWindow>
 #include <QTimer>
 #include <QPointer>
+
 class OnOffTestWidget;
 class AnalysisThread;
 class ReciverHandle;
 class SenderOrder;
 class TimerSendThread;
+
 
 namespace Ui {
 class MainWindow;
@@ -50,6 +53,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QStringList currentIpList;
+    MyWebView::MainWindow *m_webView;
 
 };
 

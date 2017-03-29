@@ -23,10 +23,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     mainWindow = this;
+    m_webView = nullptr;
 
     connect(ui->comboBox, &QComboBox::currentTextChanged, this, &MainWindow::currentIpChanged);
     connect(ui->pushButtonScane, &QPushButton::clicked, this, &MainWindow::startScanIp);
     connect(ui->pushButtonDITest, &QPushButton::clicked, this, &MainWindow::onOffTest);
+    connect(ui->pushButtonSysTest, &QPushButton::clicked, this, &MainWindow::SysTest);
+    connect(ui->pushButtonAITest, &QPushButton::clicked, this, &MainWindow::AITest);
 
     //开启县城
     senderOrder= new SenderOrder();  //初始化发送线程
@@ -47,30 +50,30 @@ MainWindow::~MainWindow()
 }
 void MainWindow::startScanIp()
 {
-    ScanIp* shellProcess;
+/*    ScanIp* shellProcess;
+    //        QStringList ipRange;
+    //        for(int j=1; j <= 26; j++) {
+    //             ipRange<<IP_PREFIX+QString::number(i*10 + j);
+    //        }
+    //        shellProcess= new ScanIp(this);
+    //        shellProcess->setObjectName("thread");
+    //        connect(shellProcess, SIGNAL(commandSuccess(QString)), this, SLOT(getScandIp(QString)));
+    //        connect(shellProcess, SIGNAL(finished()), shellProcess, SLOT(deleteLater()));
+    //          //设置每个线程的Ip扫描范围，一共10个线程
+    //        shellProcess->setIpRange(ipRange);
+
+    //        shellProcess->start(); */
+
     QUdpSocket socket;
     //清楚以前选项
     ui->comboBox->clear();
-    ui->pushButtonScane->setText(("正在扫描"));
-    ui->pushButtonScane->setDisabled(true);
+    currentIpList.clear();
+    currentIp.clear();
     for(int i=1;i < 255;i++){
-//        QStringList ipRange;
-//        for(int j=1; j <= 26; j++) {
-//             ipRange<<IP_PREFIX+QString::number(i*10 + j);
-//        }
-//        shellProcess= new ScanIp(this);
-//        shellProcess->setObjectName("thread");
-//        connect(shellProcess, SIGNAL(commandSuccess(QString)), this, SLOT(getScandIp(QString)));
-//        connect(shellProcess, SIGNAL(finished()), shellProcess, SLOT(deleteLater()));
-//          //设置每个线程的Ip扫描范围，一共10个线程
-//        shellProcess->setIpRange(ipRange);
 
-//        shellProcess->start();
         QByteArray command=CustomProtocol::senderCheck(0 ,1, 0, 24, "");
         socket.writeDatagram(command, QHostAddress(IP_PREFIX+QString::number(i)), 5001);
     }
-    ui->pushButtonScane->setDisabled(false);
-    ui->pushButtonScane->setText(("开始扫描"));
 }
 
 void MainWindow::getScandIp(QString ip)
@@ -103,16 +106,19 @@ void MainWindow::AITest()
 }
 void MainWindow::SysTest()
 {
-
+    if(currentIp.isEmpty())
+        return;
+    if(!m_webView)
+        m_webView = new MyWebView::MainWindow(QUrl("http://" + currentIp));
+    else
+        m_webView->setLocation(QUrl("http://" + currentIp));
+    m_webView->showMaximized();
 }
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    qDebug() << "Runer::closeEvent()";
-
     if(0 == QMessageBox::information(this, tr("提示"), tr("是否退出本系统"), tr("是"), tr("否")))
     {
-        if(senderOrder)
-        {
+        if(senderOrder) {
             delete senderOrder;
             senderOrder = nullptr;
         }
@@ -129,8 +135,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->accept();
         qApp->quit();
     }
-    else
-    {
+    else {
         event->ignore();
     }
 }

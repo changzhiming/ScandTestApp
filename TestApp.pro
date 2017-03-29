@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network webkitwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     protocol/reciverhandle.cpp \
     protocol/senderorder.cpp \
     protocol/timersendthread.cpp \
-    protocol/Math.cpp
+    protocol/Math.cpp \
+    webview/Webmainwindow.cpp
 
 HEADERS  += mainwindow.h \
     scanip.h \
@@ -33,10 +34,15 @@ HEADERS  += mainwindow.h \
     protocol/reciverhandle.h \
     protocol/senderorder.h \
     protocol/timersendthread.h \
-    protocol/Math.h
+    protocol/Math.h \
+    webview/Webmainwindow.h
 
 FORMS    += mainwindow.ui \
     onofftestwidget.ui
 
 RESOURCES += \
-    image.qrc
+    image.qrc \
+    webview/jquery.qrc
+
+DISTFILES += \
+    webview/jquery.min.js
